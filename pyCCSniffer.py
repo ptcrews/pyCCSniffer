@@ -46,6 +46,7 @@ import usb.core
 import usb.util
 
 import ieee15dot4 as ieee
+import send_to_l2
 
 
 """
@@ -290,7 +291,7 @@ class CC2531EMK:
             raise IOError("Device not found")
 
         self.dev.set_configuration() # must call this to establish the USB's "Config"
-        self.name = usb.util.get_string(self.dev, 256, 2) # get name from USB descriptor
+        self.name = "TI 2531"#usb.util.get_string(self.dev, 256, 2) # get name from USB descriptor
         self.ident = self.dev.ctrl_transfer(CC2531EMK.DIR_IN, CC2531EMK.GET_IDENT, 0, 0, 256) # get identity from Firmware command
 
         # power on radio, wIndex = 4
@@ -513,9 +514,14 @@ if __name__ == '__main__':
                     Field (FCF).
         """
         if len(macPDU) > 0:
+            send_to_l2.sendRaw802154Frame(macPDU, "wpan0")
+            '''
+            TockOS: For our purposes, we only want the raw macPDU
+
             packet = SniffedPacket(macPDU, timestamp)
             for handler in handlers:
                 handler.handleSniffedPacket(packet)
+            '''
 
     snifferDev = CC2531EMK(handlerDispatcher, args.channel)
 
