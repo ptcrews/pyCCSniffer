@@ -47,6 +47,7 @@ ping_test = bytes([0x61, 0xcc, 0xf1, 0xcd, 0xab, 0xa8, 0x77, 0x17,
 '''
 
 def sendRaw802154Frame(frame: bytearray, interface: str):
+    print(frame)
     s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
     s.bind((interface, 0))
     s.send(frame)
